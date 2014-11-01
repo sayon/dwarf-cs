@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "compiler", "compiler\compiler.csproj", "{94D65458-A4C1-4DA2-8264-334B89C8074A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "example-lexer", "example-lexer\example-lexer.csproj", "{6AC37697-7E67-44ED-B872-32FA9539F60F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94D65458-A4C1-4DA2-8264-334B89C8074A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D65458-A4C1-4DA2-8264-334B89C8074A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D65458-A4C1-4DA2-8264-334B89C8074A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D65458-A4C1-4DA2-8264-334B89C8074A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
