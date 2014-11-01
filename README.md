@@ -6,6 +6,7 @@ Grammar:
 statements := statement | statement ";" statements 
 
 statement := "{" statements "}" | assignment | if | while | print
+print := "print" "(" expr ")"
 assignment := IDENT "=" expr
 if := "if" "(" expr ")" statement "else" statement
 while := "while" "(" expr ")" statement
