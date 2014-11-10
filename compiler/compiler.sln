@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "compiler", "compiler\compil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "example-lexer", "example-lexer\example-lexer.csproj", "{6AC37697-7E67-44ED-B872-32FA9539F60F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "LexerTests\Tests.csproj", "{ECBF4ED5-9528-46CC-A8CA-C968CAAD2FF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AC37697-7E67-44ED-B872-32FA9539F60F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBF4ED5-9528-46CC-A8CA-C968CAAD2FF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBF4ED5-9528-46CC-A8CA-C968CAAD2FF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBF4ED5-9528-46CC-A8CA-C968CAAD2FF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBF4ED5-9528-46CC-A8CA-C968CAAD2FF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

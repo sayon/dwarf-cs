@@ -1,45 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DwarfCompiler
+﻿namespace DwarfCompiler
 {
-    internal abstract class Token
+    public class Token
     {
         public readonly string Text;
         readonly int From, To;
-        internal Token(string text, int from, int to) { Text = text.Substring(from, to - from); From = from; To = to; }
-    }
-    internal class Number : Token
-    {
-        readonly Int64 Value;
-        public Number(string text, int from, int to)
-            : base(text, from, to)
-        {
-            Value = Int64.Parse(Text);
-        }
+        public TokenType Type;
         public override string ToString()
         {
-            return "<num:" + Value + ">";
+            return Type.ToString();
         }
+        public Token(TokenType type, string text, int from, int to) { Type = type; Text = text.Substring(from, to - from); From = from; To = to; }
     }
-
-    internal class Ident : Token
+    public enum TokenType
     {
-        internal Ident(string text, int from, int to) : base(text, from, to) { }
-
-        public override string ToString()
-        {
-            return "<ident:" + Text + ">";
-        }
-    }
-    public enum KeywordType
-    {
+        Semicolon,
         Plus,
         Minus,
         Mul,
+        Div,
         Sub,
         If,
         Then,
@@ -56,17 +34,9 @@ namespace DwarfCompiler
         Geq,
         Eq,
         Assign,
+        Print,
+        Ident,
+        Number,
         EOF
     }
-    internal class Keyword : Token
-    {
-        public readonly KeywordType Type;
-        public Keyword(KeywordType type, string text, int from, int to) : base(text, from, to) { Type = type; }
-
-        public override string ToString()
-        {
-            return Type.ToString();
-        }
-    }
- 
 }
