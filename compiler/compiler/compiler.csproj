@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractInterpreter.cs" />
+    <Compile Include="IVisitor.cs" />
     <Compile Include="AST.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Parser.cs" />

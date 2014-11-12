@@ -2,28 +2,30 @@
 using System.Collections.Generic;
 
 namespace DwarfCompiler
-{   
+{
     public class Lexer
     {
         private readonly string _text;
         private int _pos = 0;
 
-        public  Lexer(string program) { _text = program + "$"; }
+        public Lexer(string program) { _text = program + "$"; }
         public List<Token> Tokens()
         {
             var tokens = new List<Token>();
             for (var token = _next(); token != null; token = _next())
-                    tokens.Add(token);
+                tokens.Add(token);
             return tokens;
         }
         private bool _expectSeparator(int offset = 0)
         {
-            return !(Char.IsLetterOrDigit(_text[_pos + offset]) || _text[_pos + offset] == '_');
+            return !(Char.IsLetterOrDigit(_text[_pos + offset]) ||
+                _text[_pos + offset] == '_');
         }
 
         private bool _expectWord(string what)
         {
-            return _text.Substring(_pos).StartsWith(what) && _expectSeparator(what.Length);
+            return _text.Substring(_pos).StartsWith(what)
+                && _expectSeparator(what.Length);
         }
 
         private Token _ident()
@@ -31,7 +33,12 @@ namespace DwarfCompiler
             int end = _pos;
             if (Char.IsLetter(_text[end]) || _text[end] == '_') end++;
             while (Char.IsLetterOrDigit(_text[end]) || _text[end] == '_') end++;
-            if (end != _pos) { var res = new Token(TokenType.Ident, _text, _pos, end); _pos = end; return res;  }
+            if (end != _pos)
+            {
+                var res = new Token(TokenType.Ident, _text, _pos, end);
+                _pos = end;
+                return res;
+            }
             else return null;
         }
 
@@ -46,16 +53,16 @@ namespace DwarfCompiler
         {
             int start = _pos;
             while (Char.IsDigit(_text[_pos])) _pos++;
-            if (_pos != start) return new Token(TokenType.Number,_text, start, _pos);
+            if (_pos != start) return new Token(TokenType.Number, _text, start, _pos);
             else return null;
         }
         private bool eof() { return _pos >= _text.Length; }
         private Token _next()
         {
             if (eof()) return null;
-            
+
             while (_pos < _text.Length && Char.IsWhiteSpace(_text[_pos])) _pos++;
-            
+
             if (eof()) return null;
             switch (_text[_pos])
             {

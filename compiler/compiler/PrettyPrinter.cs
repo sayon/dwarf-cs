@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DwarfCompiler
 {
-    public sealed class PrettyPrinter : AbstractInterpreter
+    public sealed class PrettyPrinter : IVisitor
     {
         private StringBuilder _result = new StringBuilder();
         private int _indentLevel = 0;
@@ -15,122 +15,127 @@ namespace DwarfCompiler
         private void _lessIndent() { _indentLevel--; }
         private void _indent() { _result.Append(new String(' ', _indentLevel * SPACES_PER_INDENT)); }
         public string Result { get { return _result.ToString(); } }
-        public override void VisitSeq(Seq node)
+        public override void Visit(Seq node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(";").AppendLine();
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitAssignment(Assignment node)
+        public override void Visit(Assignment node)
         {
             _indent();
-            Visit(node.Lhs);
+            node.Lhs.Accept(this);
             _result.Append(" = ");
-            Visit(node.Rhs);
+            node.Rhs.Accept(this);
         }
 
-        public override void VisitAdd(Add node)
+        public override void Visit(Add node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" + ");
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitSub(Sub node)
+        public override void Visit(Sub node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" - ");
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitDiv(Div node)
+        public override void Visit(Div node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" / ");
-            Visit(node.Right);
+            node.Right.Accept(this);
+        }
+        public override void Visit(Mul node)
+        {
+            node.Left.Accept(this);
+            _result.Append(" * ");
+            node.Right.Accept(this);
         }
 
-        public override void VisitLess(Less node)
+        public override void Visit(Less node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" < ");
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitLessOrEq(LessOrEq node)
+        public override void Visit(LessOrEq node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" <= ");
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitEqual(Equal node)
+        public override void Visit(Equal node)
         {
-            Visit(node.Left);
+            node.Left.Accept(this);
             _result.Append(" == ");
-            Visit(node.Right);
+            node.Right.Accept(this);
         }
 
-        public override void VisitPrint(Print node)
+        public override void Visit(Print node)
         {
             _indent();
             _result.Append("print (");
-            Visit(node.Expr);
+            node.Expr.Accept(this);
             _result.Append(")");
         }
 
-        public override void VisitSkip(Skip node)
+        public override void Visit(Skip node)
         {
             _indent();
             _result.Append("skip");
         }
 
-        public override void VisitWhile(While node)
+        public override void Visit(While node)
         {
             _indent();
             _result.Append("while (");
-            Visit(node.Condition);
+            node.Condition.Accept(this);
             _result.Append(")");
             _moreIndent();
-            Visit(node.Body);
+            node.Body.Accept(this);
             _lessIndent();
         }
 
-        public override void VisitIf(If node)
+        public override void Visit(If node)
         {
             _indent();
             _result.Append("if (");
-            Visit(node.Condition);
-            _result.AppendLine(")");
+            node.Condition.Accept(this);
+            _result.Append(") ");
             _moreIndent();
-            Visit(node.Yes);
-            _lessIndent();
-            _result.AppendLine();
+            node.Yes.Accept(this);
+            _lessIndent(); 
             _indent();
-            _result.AppendLine("else");
+            _result.Append(" else ");
             _moreIndent();
-            Visit(node.No);
+            node.No.Accept(this);
             _lessIndent();
         }
 
-        public override void VisitIdentifier(Identifier node)
+        public override void Visit(Identifier node)
         {
             _result.Append(node.Name);
         }
 
-        public override void VisitNumber(Number node)
+        public override void Visit(Number node)
         {
             _result.Append(node.Value.ToString());
         }
 
-        public override void VisitBlock(Block node)
+        public override void Visit(Block node)
         {
             _result.AppendLine();
             _indent();
             _result.AppendLine("{");
             _moreIndent();
-            Visit(node.InnerStatement);
+            node.InnerStatement.Accept(this);
             _result.AppendLine();
             _lessIndent();
             _indent();

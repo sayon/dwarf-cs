@@ -27,7 +27,7 @@ while ( n > 0 ) {
             var tree = new Parser(tkns).ParseStatements(); 
             //File.WriteAllLines("tokens.txt", tkns.Select(t => t.ToString()));
             var pp = new PrettyPrinter();
-            pp.Visit(tree);
+            tree.Accept(pp);
             File.WriteAllText("prettyprinted.txt", pp.Result);
         }
     }

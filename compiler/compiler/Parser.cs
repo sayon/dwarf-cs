@@ -25,10 +25,10 @@ namespace DwarfCompiler
             if (tok != null) position++;
             return tok;
         }
-        bool Able<T>(ref T saveAs, T what) where T : AST
+        bool Able<T>(out T saveAs, T what) where T : AST
         {
-            if (what != null) { saveAs = what; return true; }
-            else return false;
+            saveAs = what;
+            return what != null;
         }
 
         bool Accepted(TokenType type)
@@ -44,9 +44,9 @@ namespace DwarfCompiler
         /// </summary> 
         public Statement ParseStatement()
         {
-            Statement st = null;
+            Statement st;
             if (Accepted(TokenType.Lbrace) &&
-                Able(ref st, ParseStatement()) &&
+                Able(out st, ParseStatements()) &&
                 Accepted(TokenType.Rbrace)) return new Block(st);
             st = ParseAssignment(); if (st != null) return st;
             st = ParseIf(); if (st != null) return st;
@@ -60,10 +60,10 @@ namespace DwarfCompiler
         /// </summary>
         public Statement ParsePrint()
         {
-            Expression expr = null;
+            Expression expr;
             if (Accepted(TokenType.Print) &&
                 Accepted(TokenType.Lpar) &&
-                Able(ref expr, ParseExpression()) &&
+                Able(out expr, ParseExpression()) &&
                 Accepted(TokenType.Rpar))
                 return new Print(expr);
             return null;
@@ -79,46 +79,40 @@ namespace DwarfCompiler
         /// </summary>
         public Statement ParseAssignment()
         {
-            Expression right = null; Identifier left = null;
-            if (Able(ref left, ParseIdentifier()) &&
+            Expression right; Identifier left;
+            if (Able(out left, ParseIdentifier()) &&
             Accepted(TokenType.Assign) &&
-            Able(ref right, ParseExpression()))
+            Able(out right, ParseExpression()))
                 return new Assignment(left, right);
             return null;
         }
 
         public Statement ParseIf()
         {
-            Expression cond = null;
-            Statement yes = null,
-                      no = null;
+            Expression cond;
+            Statement yes,
+                      no;
+
             if (Accepted(TokenType.If) &&
                 Accepted(TokenType.Lpar) &&
-                Able(ref cond, ParseExpression()) &&
+                Able(out cond, ParseExpression()) &&
                 Accepted(TokenType.Rpar) &&
-                Able(ref yes, ParseStatement()) &&
+                Able(out yes, ParseStatement()) &&
                 Accepted(TokenType.Else) &&
-                Able(ref no, ParseStatement()))
+                Able(out no, ParseStatement()))
                 return new If(cond, yes, no);
             return null;
         }
 
         public While ParseWhile()
         {
-            Expression condition = null;
-            Statement body = null;
-            //var ok = true;
-            //ok = ok && Accepted(TokenType.While);
-            //ok = ok && Accepted(TokenType.Lpar);
-            //ok = ok && Able(ref condition, ParseExpression());
-            //ok = ok && Accepted(TokenType.Rpar);
-            //ok = ok && Able(ref body, ParseStatement());
-            //
+            Expression condition;
+            Statement body;
             if (Accepted(TokenType.While) &&
                 Accepted(TokenType.Lpar) &&
-                Able(ref condition, ParseExpression()) &&
+                Able(out condition, ParseExpression()) &&
                 Accepted(TokenType.Rpar) &&
-                Able(ref body, ParseStatement()))
+                Able(out body, ParseStatement()))
                 return new While(condition, body);
             return null;
         }
@@ -134,31 +128,30 @@ namespace DwarfCompiler
         /// expr := expr0 "<" expr | expr0 "<=" expr | expr0 "==" expr  
         ///       | expr0 ">" expr | expr0 ">=" expr | expr0 
         /// </summary>
-        /// <returns></returns>
         public Expression ParseExpression()
         {
             var left = ParseExpression0();
             if (left == null) return null;
 
-            Expression right = null;
+            Expression right;
             if (Accepted(TokenType.Lt) &&
-                Able(ref right, ParseExpression()))
+                Able(out right, ParseExpression()))
                 return new Less(left, right);
 
             if (Accepted(TokenType.Leq) &&
-               Able(ref right, ParseExpression()))
+               Able(out right, ParseExpression()))
                 return new LessOrEq(left, right);
 
             if (Accepted(TokenType.Gt) &&
-                Able(ref right, ParseExpression()))
+                Able(out right, ParseExpression()))
                 return new Less(right, left);
 
             if (Accepted(TokenType.Geq) &&
-                Able(ref right, ParseExpression()))
+                Able(out right, ParseExpression()))
                 return new LessOrEq(right, left);
 
             if (Accepted(TokenType.Eq) &&
-                Able(ref right, ParseExpression()))
+                Able(out right, ParseExpression()))
                 return new Equal(left, right);
 
             return left;
@@ -169,12 +162,12 @@ namespace DwarfCompiler
         public Expression ParseExpression0()
         {
             var left = ParseExpression1();
-            Expression right = null;
+            Expression right;
             if (Accepted(TokenType.Plus) &&
-                Able(ref right, ParseExpression0()))
+                Able(out right, ParseExpression0()))
                 return new Add(left, right);
             if (Accepted(TokenType.Minus) &&
-                Able(ref right, ParseExpression0()))
+                Able(out right, ParseExpression0()))
                 return new Sub(left, right);
             return left;
         }
@@ -184,12 +177,12 @@ namespace DwarfCompiler
         public Expression ParseExpression1()
         {
             var left = ParseAtom();
-            Expression right = null;
+            Expression right;
             if (Accepted(TokenType.Mul) &&
-                Able(ref right, ParseExpression1()))
+                Able(out right, ParseExpression1()))
                 return new Mul(left, right);
             if (Accepted(TokenType.Div) &&
-                Able(ref right, ParseExpression1()))
+                Able(out right, ParseExpression1()))
                 return new Div(left, right);
             return left;
         }
@@ -199,9 +192,9 @@ namespace DwarfCompiler
         /// </summary>
         public Expression ParseAtom()
         {
-            Expression insideBraces = null;
+            Expression insideBraces;
             if (Accepted(TokenType.Lbrace) &&
-                Able(ref insideBraces, ParseExpression()) &&
+                Able(out insideBraces, ParseExpression()) &&
                 Accepted(TokenType.Rbrace))
                 return insideBraces;
             var number = ParseNumber();
@@ -220,9 +213,10 @@ namespace DwarfCompiler
         public Statement ParseStatements()
         {
             var fst = ParseStatement();
-            Statement snd = null;
+            if (fst == null) return null;
+            Statement snd;
             if (Accepted(TokenType.Semicolon) &&
-                Able(ref snd, ParseStatements()))
+                Able(out snd, ParseStatements()))
                 return new Seq(fst, snd);
 
             return fst;
